@@ -15,6 +15,7 @@ pipeline {
             steps {
                 echo 'Testing Docker image'
                 sh 'docker image inspect notes-app:latest'
+                sh 'docker run -d --name notes-test -p 8001:8000 notes-app:latest'
             }
         }
     }
