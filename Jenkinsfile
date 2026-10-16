@@ -1,4 +1,4 @@
-ubuntu@Agent:~/workspace/Declarative-Pipeline$ cat Jenkinsfile
+
 pipeline {
     agent { label 'vinod' }
 
