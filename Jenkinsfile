@@ -1,3 +1,4 @@
+
 pipeline {
     agent { label 'vinod' }
 
@@ -5,9 +6,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building application'
-                sh 'ls'
-                sh 'whoami'
                 sh 'hostname'
+                sh 'docker build -t notes-app:latest .'
             }
         }
 
@@ -18,4 +18,3 @@ pipeline {
         }
     }
 }
-
