@@ -1,4 +1,3 @@
-
 pipeline {
     agent { label 'vinod' }
 
@@ -30,6 +29,34 @@ pipeline {
             steps {
                 echo 'Deploying application'
                 sh 'docker compose up -d'
+
+                echo 'Waiting for Django to become healthy'
+                sh '''
+                    for i in $(seq 1 30); do
+                        status=$(docker inspect --format='{{.State.Health.Status}}' django_cont 2>/dev/null || true)
+
+                        if [ "$status" = "healthy" ]; then
+                            echo "Django is healthy"
+                            break
+                        fi
+
+                        if [ "$i" -eq 30 ]; then
+                            echo "Django did not become healthy in time"
+                            docker compose logs --tail=50 django_app
+                            exit 1
+                        fi
+
+                        sleep 5
+                    done
+                '''
+
+                echo 'Checking Nginx HTTP response'
+                sh '''
+                    code=$(curl -sS -o /dev/null -w '%{http_code}' http://localhost/)
+                    echo "Nginx HTTP status: $code"
+                    test "$code" = "200"
+                '''
+
                 sh 'docker compose ps'
             }
         }
