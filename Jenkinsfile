@@ -8,7 +8,6 @@ pipeline {
                 sh 'ls'
                 sh 'whoami'
                 sh 'hostname'
-                sh 'whoami'
             }
         }
 
