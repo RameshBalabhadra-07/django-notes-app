@@ -13,7 +13,8 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Testing application'
+                echo 'Testing Docker image'
+                sh 'docker image inspect notes-app:latest'
             }
         }
     }
