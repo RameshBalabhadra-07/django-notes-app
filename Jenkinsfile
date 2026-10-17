@@ -1,3 +1,4 @@
+
 pipeline {
     agent { label 'vinod' }
 
@@ -37,7 +38,13 @@ pipeline {
 
                         if [ "$status" = "healthy" ]; then
                             echo "Django is healthy"
-                            break
+                            exit 0
+                        fi
+
+                        if [ "$status" = "unhealthy" ]; then
+                            echo "Django is unhealthy"
+                            docker compose logs --tail=50 django_app
+                            exit 1
                         fi
 
                         if [ "$i" -eq 30 ]; then
@@ -50,14 +57,18 @@ pipeline {
                     done
                 '''
 
+                sh 'docker compose ps'
+            }
+        }
+
+        stage('Smoke Test') {
+            steps {
                 echo 'Checking Nginx HTTP response'
                 sh '''
                     code=$(curl -sS -o /dev/null -w '%{http_code}' http://localhost/)
                     echo "Nginx HTTP status: $code"
                     test "$code" = "200"
                 '''
-
-                sh 'docker compose ps'
             }
         }
     }
