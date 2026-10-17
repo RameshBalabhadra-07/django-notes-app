@@ -68,7 +68,7 @@ pipeline {
                     code=$(curl -sS -o /dev/null -w '%{http_code}' http://localhost/)
                     echo "Nginx HTTP status: $code"
                     test "$code" = "200"
-                    echo 'successfully completed'
+                    echo 'successfully completed the test'
                 '''
             }
         }
